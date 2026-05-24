@@ -17,6 +17,13 @@ class AppConfig(BaseSettings):
     REDIS_AUTH_TOKEN: Optional[str] = os.getenv("REDIS_AUTH_TOKEN") or None
     REDIS_SSL: bool = os.getenv("REDIS_SSL", "false").lower() == "true"
 
+    # Billing — per-hour rates, snapshotted into each ticket on issue.
+    RATE_CAR: int = int(os.getenv("RATE_CAR", 100))
+    RATE_BIKE: int = int(os.getenv("RATE_BIKE", 50))
+    RATE_TRUCK: int = int(os.getenv("RATE_TRUCK", 300))
+    # Parking shorter than this is free.
+    GRACE_PERIOD_MINUTES: int = int(os.getenv("GRACE_PERIOD_MINUTES", 15))
+
     class Config:
         case_sensitive = True
         env_file = ".env"

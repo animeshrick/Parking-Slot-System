@@ -34,12 +34,21 @@ class ParkingSlotRepository:
             .first()
         )
 
-    def try_occupy_slot(self, slot_id: str, vehicle_id: str) -> bool:
+    def try_occupy_slot(
+        self,
+        slot_id: str,
+        vehicle_id: str,
+        commit: bool = True,
+    ) -> bool:
         """
         Atomically claim a slot for a vehicle.
 
         Issues a single UPDATE ... WHERE id=? AND is_occupied=False
         so two concurrent requests cannot both succeed on the same row.
+
+        Pass commit=False when the caller wants to batch this with
+        other writes in the same transaction (e.g. TicketService
+        claiming a slot and inserting a ticket together).
 
         Returns True if this caller claimed the slot, False if it was
         already taken by someone else.
@@ -58,13 +67,17 @@ class ParkingSlotRepository:
                 synchronize_session=False,
             )
         )
-        self.db.commit()
+        if commit:
+            self.db.commit()
         return rows_updated > 0
 
-    def release_slot(self, slot_id: str) -> bool:
+    def release_slot(self, slot_id: str, commit: bool = True) -> bool:
         """
         Atomically free a slot. Returns True if this call actually
         released an occupied slot, False if it was already free.
+
+        Pass commit=False to batch with other writes (e.g. closing a
+        ticket and releasing the slot in one transaction).
         """
         rows_updated = (
             self.db.query(ParkingSlot)
@@ -80,7 +93,8 @@ class ParkingSlotRepository:
                 synchronize_session=False,
             )
         )
-        self.db.commit()
+        if commit:
+            self.db.commit()
         return rows_updated > 0
 
     def get_all_slots(
