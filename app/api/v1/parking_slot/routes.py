@@ -55,16 +55,16 @@ def get_all_slots(
     )
 
 
-@router.get(
-    "/slots/{slot_type}",
-    response_model=ParkingSlotResponseSchema | None,
-    summary="Get any one available slot of the given type",
-)
-def get_available_slot(slot_type: SlotType, db: Session = Depends(get_db)):
-    # Using SlotType (enum) as the type makes FastAPI validate the
-    # path value and gives Swagger a dropdown.
-    service = ParkingSlotService(db)
-    return service.get_available_slot(slot_type.value)
+# @router.get(
+#     "/slots/{slot_type}",
+#     response_model=ParkingSlotResponseSchema | None,
+#     summary="Get any one available slot of the given type",
+# )
+# def get_available_slot(slot_type: SlotType, db: Session = Depends(get_db)):
+#     # Using SlotType (enum) as the type makes FastAPI validate the
+#     # path value and gives Swagger a dropdown.
+#     service = ParkingSlotService(db)
+#     return service.get_available_slot(slot_type.value)
 
 
 @router.post(
