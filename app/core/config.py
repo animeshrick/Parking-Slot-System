@@ -24,6 +24,11 @@ class AppConfig(BaseSettings):
     # Parking shorter than this is free.
     GRACE_PERIOD_MINUTES: int = int(os.getenv("GRACE_PERIOD_MINUTES", 15))
 
+    TOTAL_SLOTS: int = int(os.getenv("TOTAL_SLOTS", 10))
+    TOTAL_FLOORS: int = int(os.getenv("TOTAL_FLOORS", 1))
+    
+    MAX_TICKET_ISSUE_RETRIES: int = int(os.getenv("MAX_TICKET_ISSUE_RETRIES", 1))
+
     class Config:
         case_sensitive = True
         env_file = ".env"

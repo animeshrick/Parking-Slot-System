@@ -19,7 +19,7 @@ from app.api.v1.ticket.repository import TicketRepository
 
 # How many times issue_ticket retries when it loses the slot-claim
 # race to a concurrent request before giving up with 409.
-MAX_ISSUE_RETRIES = 5
+MAX_ISSUE_RETRIES = appconfig.MAX_TICKET_ISSUE_RETRIES
 
 
 class TicketService(BaseService):
@@ -75,6 +75,7 @@ class TicketService(BaseService):
             claimed = self.slot_repository.try_occupy_slot(
                 slot_id=slot.id,
                 vehicle_id=vehicle.id,
+                vehicle_type=vehicle.vehicle_type,
                 commit=False,
             )
             if not claimed:
@@ -101,7 +102,17 @@ class TicketService(BaseService):
                 )
                 self.db.commit()
                 self.db.refresh(ticket)
-                return ticket
+                # return ticket
+                return {
+                    "ticket": ticket,
+                    "slot": slot,
+                    "fee": {
+                        "rate_per_hour": ticket.rate_per_hour,
+                        "fee_amount": ticket.fee_amount,
+                        "entry_time": ticket.entry_time,
+                        "status": ticket.status
+                    },
+                }
 
             except IntegrityError:
                 # The partial unique index caught a race — between our

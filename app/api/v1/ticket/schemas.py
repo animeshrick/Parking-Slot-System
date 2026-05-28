@@ -3,6 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 from app.api.v1.parking_slot.constants import SlotType
+from app.api.v1.parking_slot.schemas import ParkingSlotResponseSchema
 from app.api.v1.ticket.constants import TicketStatus
 
 
@@ -28,3 +29,29 @@ class TicketResponseSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class TicketResponseTicket(BaseModel):
+    id: str
+    ticket_number: str
+    vehicle_id: str
+    slot_id: str
+    entry_time: datetime
+    exit_time: datetime | None
+    status: TicketStatus
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class TicketResponseFee(BaseModel):
+    rate_per_hour: int
+    fee_amount: int | None
+
+
+class IssueTicketResponseSchema(BaseModel):
+    ticket: TicketResponseTicket
+    slot: ParkingSlotResponseSchema
+    fee: TicketResponseFee

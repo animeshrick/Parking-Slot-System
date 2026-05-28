@@ -38,6 +38,7 @@ class ParkingSlotRepository:
         self,
         slot_id: str,
         vehicle_id: str,
+        vehicle_type: str,
         commit: bool = True,
     ) -> bool:
         """
@@ -58,6 +59,7 @@ class ParkingSlotRepository:
             .filter(
                 ParkingSlot.id == slot_id,
                 ParkingSlot.is_occupied == False,
+                ParkingSlot.slot_type == vehicle_type,
             )
             .update(
                 {
@@ -117,3 +119,10 @@ class ParkingSlotRepository:
             query = query.filter(ParkingSlot.floor == floor)
 
         return query.order_by(ParkingSlot.floor, ParkingSlot.slot_number).all()
+    
+    def existing_slot_no(self, slot_no: str):
+        return (
+            self.db.query(ParkingSlot)
+            .filter(ParkingSlot.slot_number == slot_no)
+            .first()
+        )

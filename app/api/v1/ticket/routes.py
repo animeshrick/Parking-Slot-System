@@ -6,6 +6,7 @@ from app.api.v1.ticket.constants import TicketStatus
 from app.api.v1.ticket.schemas import (
     IssueTicketSchema,
     TicketResponseSchema,
+    IssueTicketResponseSchema,
 )
 from app.api.v1.ticket.service import TicketService
 
@@ -14,7 +15,8 @@ router = APIRouter()
 
 @router.post(
     "/issue",
-    response_model=TicketResponseSchema,
+    # response_model=TicketResponseSchema,
+    response_model=IssueTicketResponseSchema,
     status_code=status.HTTP_201_CREATED,
     summary="Issue a ticket — picks a free slot and starts the parking session",
     responses={
@@ -64,15 +66,15 @@ def get_active_ticket_by_plate(plate_number: str, db: Session = Depends(get_db))
     return service.get_active_by_plate(plate_number)
 
 
-@router.get(
-    "/{ticket_id}",
-    response_model=TicketResponseSchema,
-    summary="Fetch one ticket by id (active or closed)",
-    responses={404: {"description": "Ticket not found"}},
-)
-def get_ticket(ticket_id: str, db: Session = Depends(get_db)):
-    service = TicketService(db)
-    return service.get_ticket(ticket_id)
+# @router.get(
+#     "/{ticket_id}",
+#     response_model=TicketResponseSchema,
+#     summary="Fetch one ticket by id (active or closed)",
+#     responses={404: {"description": "Ticket not found"}},
+# )
+# def get_ticket(ticket_id: str, db: Session = Depends(get_db)):
+#     service = TicketService(db)
+#     return service.get_ticket(ticket_id)
 
 
 @router.get(

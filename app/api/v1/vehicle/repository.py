@@ -27,7 +27,7 @@ class VehicleRepository:
             )
             .first()
         )
-        return vehicle
+        # return vehicle
 
     def get_all_vehicle(self):
         return (self.db.query(Vehicle).all())

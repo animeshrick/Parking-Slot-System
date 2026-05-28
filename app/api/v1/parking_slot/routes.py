@@ -16,7 +16,7 @@ router = APIRouter()
 
 @router.post(
     "/slots",
-    response_model=ParkingSlotResponseSchema,
+    # response_model=ParkingSlotResponseSchema,
     status_code=status.HTTP_201_CREATED,
     summary="Create a new parking slot",
 )
@@ -67,24 +67,24 @@ def get_all_slots(
 #     return service.get_available_slot(slot_type.value)
 
 
-@router.post(
-    "/park",
-    response_model=ParkResponseSchema,
-    status_code=status.HTTP_200_OK,
-    summary="Park a vehicle (atomic claim of a free slot)",
-    responses={
-        404: {"description": "Vehicle not found"},
-        409: {"description": "No available slots of this type, or lost race under contention"},
-    },
-)
-def park_vehicle(payload: ParkVehicleSchema, db: Session = Depends(get_db)):
-    """
-    Atomically assign one available slot of the requested type to
-    the vehicle identified by `plate_number`. Replaces the old
-    `occupy_slot` endpoint which had a race condition.
-    """
-    service = ParkingSlotService(db)
-    return service.park_vehicle(payload)
+# @router.post(
+#     "/park",
+#     response_model=ParkResponseSchema,
+#     status_code=status.HTTP_200_OK,
+#     summary="Park a vehicle (atomic claim of a free slot)",
+#     responses={
+#         404: {"description": "Vehicle not found"},
+#         409: {"description": "No available slots of this type, or lost race under contention"},
+#     },
+# )
+# def park_vehicle(payload: ParkVehicleSchema, db: Session = Depends(get_db)):
+#     """
+#     Atomically assign one available slot of the requested type to
+#     the vehicle identified by `plate_number`. Replaces the old
+#     `occupy_slot` endpoint which had a race condition.
+#     """
+#     service = ParkingSlotService(db)
+#     return service.park_vehicle(payload)
 
 
 @router.post(
